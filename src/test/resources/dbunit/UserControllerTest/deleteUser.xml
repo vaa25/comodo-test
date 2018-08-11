@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <user_data id="-1" first_name="Adam" last_name="Smith" birth_day="1723-06-05" gender="MALE"/>
+    <user_data id="-3" first_name="Ray" last_name="Bradbury" birth_day="1920-08-20" gender="MALE"/>
+</dataset>

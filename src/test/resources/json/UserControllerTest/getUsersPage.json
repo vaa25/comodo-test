@@ -1,0 +1,15 @@
+{
+  "content": [
+    {
+      "firstName": "Marie",
+      "lastName": "Qurie",
+      "birthDay": "1867-11-07",
+      "gender": "FEMALE",
+      "userId": -2
+    }
+  ],
+  "numberOfElements": 1,
+  "last": false,
+  "totalPages": 3,
+  "first": false
+}

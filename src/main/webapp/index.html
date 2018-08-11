@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <style>
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr td:nth-child(1), td:nth-child(4), td:nth-child(5), td:nth-child(6) {
+            width: 1%;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <br/>
+    <label for="page_size">Users per page</label>
+    <select id="page_size" onchange="openFirstPage()">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="10" selected>10</option>
+    </select>
+    <br/>
+    <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Birthday</th>
+            <th>Gender</th>
+            <th>Control</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <div align="right">
+        <button id="first_page" onclick="openFirstPage()" class="btn btn-default btn-xs">First</button>
+        <button id="previous_page" onclick="openPreviousPage()" class="btn btn-default btn-xs">Prev</button>
+        <button id="next_page" onclick="openNextPage()" class="btn btn-default btn-xs">Next</button>
+        <button id="last_page" onclick="openLastPage()" class="btn btn-default btn-xs">Last</button>
+    </div>
+    <div class="modal-footer">
+        <button onclick="create_user_dialog.showModal()" class="btn btn-primary btn-xs">Add new user</button>
+    </div>
+
+    <dialog id="create_user_dialog" title="Create new user">
+        <header class="dialog-header">
+            <h4>Create new user</h4>
+        </header>
+
+        <div class="dialog-content">
+            <label for="create_user_first_name">First name</label>
+            <input id="create_user_first_name" type="text" name="firstName"/>
+            <label for="create_user_last_name">Last name</label>
+            <input id="create_user_last_name" type="text" name="lastName"/>
+            <label for="create_user_birth_day">Birth day</label>
+            <input id="create_user_birth_day" type="date" name="birthDay"/>
+            <label for="create_user_gender">Gender</label>
+            <select id="create_user_gender" name="gender">
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+        </div>
+        <div class="dialog-footer">
+            <button id="create-user-submit" type="button" onclick="addNewUser()" class="btn btn-primary btn-xs">Create
+            </button>
+            <button id="create-user-cancel" type="button" onclick="closeCreateUserDialog()"
+                    class="btn btn-default btn-xs">Cancel
+            </button>
+        </div>
+    </dialog>
+
+    <dialog id="edit_user_dialog" title="Edit user">
+        <header class="dialog-header">
+            <h4>Edit user</h4>
+        </header>
+
+        <div class="dialog-content">
+            <label for="edit_user_first_name">First name</label>
+            <input id="edit_user_first_name" type="text" name="firstName"/>
+            <label for="edit_user_last_name">Last name</label>
+            <input id="edit_user_last_name" type="text" name="lastName"/>
+            <label for="edit_user_birth_day">Birth day</label>
+            <input id="edit_user_birth_day" type="date" name="birthDay"/>
+            <label for="edit_user_gender">Gender</label>
+            <select id="edit_user_gender" name="gender">
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button id="edit-user-submit" type="button" onclick="editUser()" class="btn btn-primary btn-xs">Edit
+            </button>
+            <button id="edit-user-cancel" type="button" onclick="edit_user_dialog.close()"
+                    class="btn btn-default btn-xs">Cancel
+            </button>
+        </div>
+        <input id="edit_user_id" type="hidden"/>
+    </dialog>
+
+    <dialog id="delete_user_dialog" title="Confirm user deleting" class="container">
+        <header class="dialog-header">
+            <h4>Confirm user deleting</h4>
+        </header>
+
+        <div class="dialog-content">
+            <table id="delete_table" class="table table-striped table-bordered" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Birthday</th>
+                    <th>Gender</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="delete_user_id"></td>
+                    <td id="delete_user_first_name"></td>
+                    <td id="delete_user_last_name"></td>
+                    <td id="delete_user_birth_day"></td>
+                    <td id="delete_user_gender"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button id="delete-user-submit" type="button" onclick="deleteUser()" class="btn btn-danger btn-xs">Delete
+            </button>
+            <button id="delete-user-cancel" type="button" onclick="delete_user_dialog.close()"
+                    class="btn btn-default btn-xs">
+                Cancel
+            </button>
+        </div>
+    </dialog>
+</div>
+<input id="current_page" type="hidden" value="0"/>
+<input id="total_pages" type="hidden" value="1"/>
+
+<script language="JavaScript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        refreshTable();
+    });
+
+    function refreshTable() {
+        $.get({
+            url: '/users',
+            data: {
+                page: $('#current_page').val(),
+                size: $('#page_size').val()
+            },
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                var tbody = $("#table").find('tbody');
+                tbody.empty();
+                for (var i = 0; i < response.numberOfElements; i++) {
+                    tbody
+                        .append($('<tr>')
+                            .append($('<td>').text(response.content[i].userId).attr('class', 'userId'))
+                            .append($('<td>').text(response.content[i].firstName).attr('class', 'firstName'))
+                            .append($('<td>').text(response.content[i].lastName).attr('class', 'lastName'))
+                            .append($('<td>').text(response.content[i].birthDay).attr('class', 'birthDay'))
+                            .append($('<td>').text(response.content[i].gender).attr('class', 'gender'))
+                            .append($('<td>')
+                                .append($('<button>').attr('class', 'edit btn btn-primary btn-xs').text('Edit').on("click", function () {
+                                    var row = $(this).closest('tr');
+                                    $('#edit_user_id').val(row.find(".userId").text());
+                                    $('#edit_user_first_name').val(row.find(".firstName").text());
+                                    $('#edit_user_last_name').val(row.find(".lastName").text());
+                                    $('#edit_user_birth_day').val(row.find(".birthDay").text());
+                                    $('#edit_user_gender').val(row.find(".gender").text());
+                                    $('#edit_user_dialog')[0].showModal();
+                                }))
+                                .append($('<button>').attr('class', 'delete btn btn-danger btn-xs').text('Delete').on("click", function () {
+                                    var row = $(this).closest('tr');
+                                    $('#delete_user_id').text(row.find(".userId").text());
+                                    $('#delete_user_first_name').text(row.find(".firstName").text());
+                                    $('#delete_user_last_name').text(row.find(".lastName").text());
+                                    $('#delete_user_birth_day').text(row.find(".birthDay").text());
+                                    $('#delete_user_gender').text(row.find(".gender").text());
+                                    $('#delete_user_dialog')[0].showModal();
+                                }))
+                            )
+                        );
+                }
+                if (response.first) {
+                    $('#previous_page').attr('disabled', 'disabled');
+                    $('#first_page').attr('disabled', 'disabled')
+                } else {
+                    $('#previous_page').removeAttr('disabled');
+                    $('#first_page').removeAttr('disabled')
+                }
+                if (response.last) {
+                    $('#next_page').attr('disabled', 'disabled');
+                    $('#last_page').attr('disabled', 'disabled')
+                } else {
+                    $('#next_page').removeAttr('disabled');
+                    $('#last_page').removeAttr('disabled')
+                }
+                $('#total_pages').val(response.totalPages)
+            },
+            error: function (response) {
+                alert(JSON.stringify(response));
+            }
+        });
+    }
+
+    function addNewUser() {
+        var data = {
+            firstName: $('#create_user_first_name').val(),
+            lastName: $('#create_user_last_name').val(),
+            birthDay: $('#create_user_birth_day').val(),
+            gender: $('#create_user_gender').val()
+        };
+        $.post({
+            url: '/users',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                closeCreateUserDialog();
+                alert('User "' + data.firstName + ' ' + data.lastName + '" added successfully');
+                refreshTable();
+            },
+            error: function (response) {
+                alert(JSON.stringify(response));
+            }
+        });
+    }
+
+    function closeCreateUserDialog() {
+        $('#create_user_first_name').val('');
+        $('#create_user_last_name').val('');
+        $('#create_user_birth_day').val('');
+        $('#create_user_gender').val('');
+        $('#create_user_dialog')[0].close();
+    }
+
+    function editUser() {
+        var data = {
+            userId: $('#edit_user_id').val(),
+            firstName: $('#edit_user_first_name').val(),
+            lastName: $('#edit_user_last_name').val(),
+            birthDay: $('#edit_user_birth_day').val(),
+            gender: $('#edit_user_gender').val()
+        };
+        $.ajax({
+            method: 'PUT',
+            url: '/users',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $('#edit_user_dialog')[0].close();
+                alert('User "' + data.firstName + ' ' + data.lastName + '" edited successfully');
+                refreshTable();
+            },
+            error: function (response) {
+                alert(JSON.stringify(response));
+            }
+        });
+    }
+
+    function deleteUser() {
+        var data = {
+            userId: $('#delete_user_id').text(),
+            firstName: $('#delete_user_first_name').text(),
+            lastName: $('#delete_user_last_name').text(),
+            birthDay: $('#delete_user_birth_day').text(),
+            gender: $('#delete_user_gender').text()
+        };
+        $.ajax({
+            method: 'DELETE',
+            url: '/users',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $('#delete_user_dialog')[0].close();
+                alert('User "' + data.firstName + ' ' + data.lastName + '" deleted successfully');
+                refreshTable();
+            },
+            error: function (response) {
+                alert(JSON.stringify(response));
+            }
+        });
+    }
+
+    function openFirstPage() {
+        $('#current_page').val(0);
+        refreshTable();
+    }
+
+    function openPreviousPage() {
+        $('#current_page').val(parseInt($('#current_page').val()) - 1);
+        refreshTable();
+    }
+
+    function openNextPage() {
+        $('#current_page').val(parseInt($('#current_page').val()) + 1);
+        refreshTable();
+    }
+
+    function openLastPage() {
+        $('#current_page').val(parseInt($('#total_pages').val()) - 1);
+        refreshTable();
+    }
+
+    /*]]>*/
+</script>
+
+</body>
+</html>
