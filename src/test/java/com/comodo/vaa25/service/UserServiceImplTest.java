@@ -15,8 +15,7 @@ import org.springframework.data.domain.Sort;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
@@ -42,19 +41,60 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void saveUser() {
+    public void createsUser() {
         final User user = new User();
 
-        service.saveUser(user);
+        service.createUser(user);
 
         verify(userDao).save(user);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWhenTryCreateExistingUser(){
+        final User user = new User().setId(-1L);
+        when(userDao.exists(-1L)).thenReturn(true);
+
+        service.createUser(user);
+
+        verify(userDao, never()).save(user);
+    }
+
+    @Test
+    public void editsUser() {
+        final User user = new User().setId(1L);
+        when(userDao.exists(1L)).thenReturn(true);
+
+        service.editUser(user);
+
+        verify(userDao).save(user);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWhenTryEditAbsentUser(){
+        final User user = new User().setId(-1L);
+        when(userDao.exists(-1L)).thenReturn(false);
+
+        service.createUser(user);
+
+        verify(userDao, never()).save(user);
+    }
+
     @Test
     public void deleteUser() {
-        final User user = new User();
+        final User user = new User().setId(-1L);
+        when(userDao.exists(-1L)).thenReturn(true);
         service.deleteUser(user);
 
         verify(userDao).delete(user);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWhenTryDeleteAbsentUser(){
+        final User user = new User().setId(-1L);
+        when(userDao.exists(-1L)).thenReturn(false);
+
+        service.deleteUser(user);
+
+        verify(userDao, never()).delete(user);
     }
 }

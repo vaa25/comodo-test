@@ -17,16 +17,26 @@ public interface UserService {
     Page<User> getUserPage(Integer page, Integer size);
 
     /**
-     * Saves user. If user has id, then rewrites user with specified id, if not - then adds new user. 
+     * Creates new user.
      * 
-     * @param user user to save.
+     * @param user user to create.
+     * @throws IllegalArgumentException if creating user has not null id.
      */
-    void saveUser(User user);
+    void createUser(User user);
+
+    /**
+     * Edits user.
+     *
+     * @param user editing user.
+     * @throws IllegalArgumentException if editing user not exists.
+     */
+    void editUser(User user);
 
     /**
      * Deletes user with specified in {@link User} id. Other fields of {@link User} not important. 
      *
      * @param user user to delete.
+     * @throws IllegalArgumentException if deleting user not exists.
      */
     void deleteUser(User user);
 }
