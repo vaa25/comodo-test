@@ -80,8 +80,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/deleteUser.xml", assertionMode = NON_STRICT_UNORDERED)
     public void deleteUser() throws Exception {
         this.mockMvc
-                .perform(delete("/users/-2")
-                        .contentType(APPLICATION_JSON_UTF8))
+                .perform(delete("/users/-2"))
                 .andExpect(status().isOk());
     }
 
@@ -89,8 +88,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/UserControllerTest.xml", assertionMode = NON_STRICT_UNORDERED)
     public void tryDeleteAbsentUser() throws Exception {
         this.mockMvc
-                .perform(delete("/users/-4")
-                        .contentType(APPLICATION_JSON_UTF8))
+                .perform(delete("/users/-4"))
                 .andExpect(status().isBadRequest());
     }
 }

@@ -38,7 +38,7 @@ public class UserController {
         userService.editUser(userId, user);
     }
 
-    @DeleteMapping(path = "/users/{userId}", consumes = APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(path = "/users/{userId}")
     public void deleteUser(@PathVariable final Long userId) {
         userService.deleteUser(userId);
     }

@@ -274,7 +274,6 @@
         $.ajax({
             method: 'DELETE',
             url: '/users/' + $('#delete_user_id').text(),
-            contentType: "application/json; charset=utf-8",
             success: function (response) {
                 $('#delete_user_dialog')[0].close();
                 alert('User "' + $('#delete_user_first_name').text() + ' ' + $('#delete_user_last_name').text() + '" deleted successfully');
