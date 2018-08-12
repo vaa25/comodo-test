@@ -60,7 +60,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/editUser.xml", assertionMode = NON_STRICT_UNORDERED)
     public void editUser() throws Exception {
         this.mockMvc
-                .perform(put("/users")
+                .perform(put("/users/-2")
                         .content(resourceAsString("/json/UserControllerTest/editUser.json"))
                         .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -70,7 +70,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/UserControllerTest.xml", assertionMode = NON_STRICT_UNORDERED)
     public void tryEditAbsentUser() throws Exception {
         this.mockMvc
-                .perform(put("/users")
+                .perform(put("/users/-4")
                         .content(resourceAsString("/json/UserControllerTest/tryEditAbsentUser.json"))
                         .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
@@ -80,8 +80,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/deleteUser.xml", assertionMode = NON_STRICT_UNORDERED)
     public void deleteUser() throws Exception {
         this.mockMvc
-                .perform(delete("/users")
-                        .content(resourceAsString("/json/UserControllerTest/deleteUser.json"))
+                .perform(delete("/users/-2")
                         .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
     }
@@ -90,8 +89,7 @@ public class UserControllerTest extends AbstractDbunitTest {
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/UserControllerTest.xml", assertionMode = NON_STRICT_UNORDERED)
     public void tryDeleteAbsentUser() throws Exception {
         this.mockMvc
-                .perform(delete("/users")
-                        .content(resourceAsString("/json/UserControllerTest/tryDeleteAbsentUser.json"))
+                .perform(delete("/users/-4")
                         .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }

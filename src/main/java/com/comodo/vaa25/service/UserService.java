@@ -27,16 +27,17 @@ public interface UserService {
     /**
      * Edits user.
      *
+     * @param userId user id.
      * @param user editing user.
      * @throws IllegalArgumentException if editing user not exists.
      */
-    void editUser(User user);
+    void editUser(Long userId, User user);
 
     /**
-     * Deletes user with specified in {@link User} id. Other fields of {@link User} not important. 
+     * Deletes user with specified id.
      *
-     * @param user user to delete.
+     * @param userId id of user to delete.
      * @throws IllegalArgumentException if deleting user not exists.
      */
-    void deleteUser(User user);
+    void deleteUser(Long userId);
 }

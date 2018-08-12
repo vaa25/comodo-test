@@ -64,7 +64,7 @@ public class UserServiceImplTest {
         final User user = new User().setId(1L);
         when(userDao.exists(1L)).thenReturn(true);
 
-        service.editUser(user);
+        service.editUser(1L, user);
 
         verify(userDao).save(user);
     }
@@ -81,20 +81,18 @@ public class UserServiceImplTest {
 
     @Test
     public void deleteUser() {
-        final User user = new User().setId(-1L);
         when(userDao.exists(-1L)).thenReturn(true);
-        service.deleteUser(user);
+        service.deleteUser(-1L);
 
-        verify(userDao).delete(user);
+        verify(userDao).delete(-1L);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionWhenTryDeleteAbsentUser(){
-        final User user = new User().setId(-1L);
         when(userDao.exists(-1L)).thenReturn(false);
 
-        service.deleteUser(user);
+        service.deleteUser(-1L);
 
-        verify(userDao, never()).delete(user);
+        verify(userDao, never()).delete(-1L);
     }
 }

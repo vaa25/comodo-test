@@ -248,7 +248,6 @@
 
     function editUser() {
         var data = {
-            userId: $('#edit_user_id').val(),
             firstName: $('#edit_user_first_name').val(),
             lastName: $('#edit_user_last_name').val(),
             birthDay: $('#edit_user_birth_day').val(),
@@ -256,7 +255,7 @@
         };
         $.ajax({
             method: 'PUT',
-            url: '/users',
+            url: '/users/' + $('#edit_user_id').val(),
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             success: function (response) {
@@ -271,21 +270,14 @@
     }
 
     function deleteUser() {
-        var data = {
-            userId: $('#delete_user_id').text(),
-            firstName: $('#delete_user_first_name').text(),
-            lastName: $('#delete_user_last_name').text(),
-            birthDay: $('#delete_user_birth_day').text(),
-            gender: $('#delete_user_gender').text()
-        };
+
         $.ajax({
             method: 'DELETE',
-            url: '/users',
-            data: JSON.stringify(data),
+            url: '/users/' + $('#delete_user_id').text(),
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 $('#delete_user_dialog')[0].close();
-                alert('User "' + data.firstName + ' ' + data.lastName + '" deleted successfully');
+                alert('User "' + $('#delete_user_first_name').text() + ' ' + $('#delete_user_last_name').text() + '" deleted successfully');
                 refreshTable();
             },
             error: function (response) {

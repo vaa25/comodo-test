@@ -29,18 +29,18 @@ public class UserController {
     }
 
     @PostMapping(path = "/users", consumes = APPLICATION_JSON_UTF8_VALUE)
-    public void addNewUser(@RequestBody User user) {
+    public void addNewUser(@RequestBody final User user) {
         userService.createUser(user);
     }
 
-    @PutMapping(path = "/users", consumes = APPLICATION_JSON_UTF8_VALUE)
-    public void editUser(@RequestBody User user) {
-        userService.editUser(user);
+    @PutMapping(path = "/users/{userId}", consumes = APPLICATION_JSON_UTF8_VALUE)
+    public void editUser(@PathVariable final Long userId, @RequestBody final User user) {
+        userService.editUser(userId, user);
     }
 
-    @DeleteMapping(path = "/users", consumes = APPLICATION_JSON_UTF8_VALUE)
-    public void deleteUser(@RequestBody User user) {
-        userService.deleteUser(user);
+    @DeleteMapping(path = "/users/{userId}", consumes = APPLICATION_JSON_UTF8_VALUE)
+    public void deleteUser(@PathVariable final Long userId) {
+        userService.deleteUser(userId);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -38,23 +38,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void editUser(final User user) {
-        if (userDao.exists(user.getId())){
-            userDao.save(user);
+    public void editUser(final Long userId, final User user) {
+        if (userDao.exists(userId)){
+            userDao.save(user.setId(userId));
         } else {
-            log.error("Try edit user with not exist id = {}", user.getId());
-            throw new IllegalArgumentException(format("User with id = {0} not exists", user.getId()));
+            log.error("Try edit user with not exist id = {}", userId);
+            throw new IllegalArgumentException(format("User with id = {0} not exists", userId));
         }
     }
 
     @Override
     @Transactional
-    public void deleteUser(final User user) {
-        if (userDao.exists(user.getId())){
-            userDao.delete(user);
+    public void deleteUser(final Long userId) {
+        if (userDao.exists(userId)){
+            userDao.delete(userId);
         } else {
-            log.error("Try delete user with not exist id = {}", user.getId());
-            throw new IllegalArgumentException(format("User with id = {0} not exists", user.getId()));
+            log.error("Try delete user with not exist id = {}", userId);
+            throw new IllegalArgumentException(format("User with id = {0} not exists", userId));
         }
     }
 }
