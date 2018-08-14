@@ -2,6 +2,11 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="1" author="vaa25">
+        <sql>CREATE TYPE gender AS ENUM ('MALE','FEMALE')</sql>
+    </changeSet>
+
     <changeSet id="2" author="vaa25">
         <createTable tableName="user_data">
             <column name="id" autoIncrement="true" type="BIGINT(20)">
@@ -10,7 +15,7 @@
             <column name="first_name" type="VARCHAR(255)"/>
             <column name="last_name" type="VARCHAR(255)"/>
             <column name="birth_day" type="DATE"/>
-            <column name="gender" type="VARCHAR(10)"/>
+            <column name="gender" type="gender"/>
         </createTable>
     </changeSet>
 

@@ -1,5 +1,6 @@
 package com.comodo.vaa25.entity;
 
+import com.comodo.vaa25.PostgreSqlEnumType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,17 +9,26 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
 @Table(name = "user_data")
 @Accessors(chain = true)
+@TypeDef(
+        name = "gender",
+        typeClass = PostgreSqlEnumType.class
+)
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @JsonProperty("userId")
     Long id;
     String firstName;
@@ -27,5 +37,7 @@ public class User {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     LocalDate birthDay;
-    String gender;
+    @Enumerated(value = STRING)
+    @Type(type = "gender")
+    Gender gender;
 }
