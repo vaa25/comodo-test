@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import static java.time.ZoneOffset.UTC;
 
 @Configuration
 public class TestConfiguration {
@@ -19,4 +24,10 @@ public class TestConfiguration {
         factory.setDatabaseConfig(config);
         return factory;
     }
+
+    @Bean
+    public Clock clock() {
+        return Clock.fixed(LocalDateTime.of(2018, 1, 1, 0, 0, 0).toInstant(UTC), ZoneId.of("UTC"));
+    }
+
 }

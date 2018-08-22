@@ -47,16 +47,6 @@ public class UserControllerTest extends AbstractDbunitTest {
     }
 
     @Test
-    @ExpectedDatabase(value = "/dbunit/UserControllerTest/UserControllerTest.xml", assertionMode = NON_STRICT_UNORDERED)
-    public void tryCreateExistingUser() throws Exception {
-        this.mockMvc
-                .perform(post("/users")
-                        .content(resourceAsString("/json/UserControllerTest/tryCreateExistingUser.json"))
-                        .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @ExpectedDatabase(value = "/dbunit/UserControllerTest/editUser.xml", assertionMode = NON_STRICT_UNORDERED)
     public void editUser() throws Exception {
         this.mockMvc

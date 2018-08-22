@@ -3,9 +3,7 @@ package com.comodo.vaa25.entity;
 import com.comodo.vaa25.PostgreSqlEnumType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,14 +28,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @JsonProperty("userId")
-    Long id;
-    String firstName;
-    String lastName;
+    private Long id;
+    private String firstName;
+    private String lastName;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    LocalDate birthDay;
+    private LocalDate birthDay;
     @Enumerated(value = STRING)
     @Type(type = "gender")
-    Gender gender;
+    private Gender gender;
+
 }

@@ -216,6 +216,15 @@
         });
     }
 
+    function messagesFromResponse(response) {
+        var errors = response.responseJSON.errors;
+        var messages = "";
+        for (var i = 0; i < errors.length; i++) {
+            messages = messages + errors[i].defaultMessage + "\n";
+        }
+        return messages;
+    }
+
     function addNewUser() {
         var data = {
             firstName: $('#create_user_first_name').val(),
@@ -233,7 +242,7 @@
                 refreshTable();
             },
             error: function (response) {
-                alert(JSON.stringify(response));
+                alert(messagesFromResponse(response));
             }
         });
     }
@@ -264,7 +273,7 @@
                 refreshTable();
             },
             error: function (response) {
-                alert(JSON.stringify(response));
+                alert(messagesFromResponse(response));
             }
         });
     }

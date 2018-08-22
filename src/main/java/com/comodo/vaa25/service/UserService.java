@@ -1,5 +1,6 @@
 package com.comodo.vaa25.service;
 
+import com.comodo.vaa25.dto.UserDto;
 import com.comodo.vaa25.entity.User;
 import org.springframework.data.domain.Page;
 
@@ -22,7 +23,7 @@ public interface UserService {
      * @param user user to create.
      * @throws IllegalArgumentException if creating user has not null id.
      */
-    void createUser(User user);
+    void createUser(UserDto user);
 
     /**
      * Edits user.
@@ -31,7 +32,7 @@ public interface UserService {
      * @param user editing user.
      * @throws IllegalArgumentException if editing user not exists.
      */
-    void editUser(Long userId, User user);
+    void editUser(Long userId, UserDto user);
 
     /**
      * Deletes user with specified id.

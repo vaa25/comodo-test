@@ -1,6 +1,7 @@
 package com.comodo.vaa25.service;
 
 import com.comodo.vaa25.dao.UserDao;
+import com.comodo.vaa25.dto.UserDto;
 import com.comodo.vaa25.entity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
+
+import static com.comodo.vaa25.entity.Gender.MALE;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -42,39 +46,40 @@ public class UserServiceImplTest {
 
     @Test
     public void createsUser() {
-        final User user = new User();
+        final UserDto userDto = new UserDto("name", "surname", LocalDate.MIN, MALE);
+        service.createUser(userDto);
 
-        service.createUser(user);
-
+        final User user = new User()
+                .setFirstName("name")
+                .setLastName("surname")
+                .setBirthDay(LocalDate.MIN)
+                .setGender(MALE);
         verify(userDao).save(user);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenTryCreateExistingUser(){
-        final User user = new User().setId(-1L);
-        when(userDao.exists(-1L)).thenReturn(true);
-
-        service.createUser(user);
-
-        verify(userDao, never()).save(user);
     }
 
     @Test
     public void editsUser() {
-        final User user = new User().setId(1L);
         when(userDao.exists(1L)).thenReturn(true);
 
-        service.editUser(1L, user);
+        final UserDto userDto = new UserDto("name", "surname", LocalDate.MIN, MALE);
+        service.editUser(1L, userDto);
 
+        final User user = new User()
+                .setId(1L)
+                .setFirstName("name")
+                .setLastName("surname")
+                .setBirthDay(LocalDate.MIN)
+                .setGender(MALE);
         verify(userDao).save(user);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenTryEditAbsentUser(){
+    public void throwsExceptionWhenTryEditAbsentUser() {
+        final UserDto userDto = new UserDto("name", "surname", LocalDate.MIN, MALE);
         final User user = new User().setId(-1L);
         when(userDao.exists(-1L)).thenReturn(false);
 
-        service.createUser(user);
+        service.editUser(-1L, userDto);
 
         verify(userDao, never()).save(user);
     }
@@ -88,7 +93,7 @@ public class UserServiceImplTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWhenTryDeleteAbsentUser(){
+    public void throwsExceptionWhenTryDeleteAbsentUser() {
         when(userDao.exists(-1L)).thenReturn(false);
 
         service.deleteUser(-1L);
