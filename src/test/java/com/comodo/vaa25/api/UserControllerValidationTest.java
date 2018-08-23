@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -41,6 +42,17 @@ public class UserControllerValidationTest {
                 .andReturn().getResolvedException().getMessage();
         verify(userService, never()).editUser(any(), any());
         assertThat(message, new Contains("First name size should be between 1 and 30 symbols"));
+    }
+
+    @Test
+    public void tryEditUserWithInvalidId() throws Exception {
+        this.mockMvc
+                .perform(put("/users/df")
+                        .content(resourceAsString("/json/UserControllerValidationTest/tryEditUserWithInvalidId.json"))
+                        .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"df\" should be the number"));
+        verify(userService, never()).editUser(any(), any());
     }
 
     @Test

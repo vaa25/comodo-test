@@ -3,8 +3,8 @@ package com.comodo.vaa25.service;
 import com.comodo.vaa25.dao.UserDao;
 import com.comodo.vaa25.dto.UserDto;
 import com.comodo.vaa25.entity.User;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,11 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 import static java.text.MessageFormat.format;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
+
+    @Autowired
+    public UserServiceImpl(final UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     @Transactional(readOnly = true)
